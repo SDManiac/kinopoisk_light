@@ -1,29 +1,17 @@
-const API_key = 'e0b8ee73-8e36-4d46-9651-177fdcb541a8';
-const API_url_pop = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_100_POPULAR_FILMS&page=1';
-const API_url_search = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword='
+const API_URL_POP = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_100_POPULAR_FILMS&page=1';
+const API_URL_SEARCH = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=';
+import { getData } from './api.js';
 
-getMovies(API_url_pop);
 
-/**
- * 
- * @param {string} url 
- */
-async function getMovies(url) {
-    const resp = await fetch(url, {
-        headers: {
-            "Content-Type": "application/json",
-            "X-API-KEY": API_key
-        }
-    });
-    const respData = await resp.json();
-    showMovies(respData)
-}
+getData(API_URL_POP).then((respData) => {
+    renderingCards(respData);
+});
 
 /**
  * Выбор цвета иконки в зависимости от рейтинга
  * 
- * @param {string} rate 
- * @returns {string}
+ * @param {string} rate - Рейтинг фильма
+ * @returns {string} - Строка, означающая используемый цвет
  */
 function getColorByRating(rate) {
     if (rate >= 8) {
@@ -43,8 +31,8 @@ function getColorByRating(rate) {
  * Если указан рейтинг ожидания, возвращает 'Soon'
  * Если рейтинг в принципе отсутсвует, возвращает 'N/R'
  * 
- * @param {string} rate 
- * @returns {string}
+ * @param {string} rate - Рейтинг фильма, как указан в базе данных
+ * @returns {string} - Рейтинг/Скоро будет/Отсутствие рейтинга
  */
 function getRating(rate) {
     if (/^[\d\.]+%$/.test(rate)) {
@@ -59,9 +47,9 @@ function getRating(rate) {
 
 /**
  * 
- * @param {object} data 
+ * @param {object} data - Данные, полученные с API
  */
-function showMovies(data) {
+function renderingCards(data) {
     const moviesEl = document.querySelector('.container');
 
     // Высвобождение места для фильмов по запросу
@@ -69,9 +57,9 @@ function showMovies(data) {
 
     data.films.forEach(movie => {
         const movieEl = document.createElement('div');
-        movieEl.classList.add('movie');
-        let location = "/movie_page.html?id=" + movie.filmId;
-        movieEl.innerHTML = `
+        const location = "/movie_page.html?id=" + movie.filmId;
+
+        movieEl.insertAdjacentHTML('afterBegin' ,`
         <div class="card">
 			<a href="${location}">
 				<div class="content">
@@ -87,7 +75,7 @@ function showMovies(data) {
                 (genre) => ` ${genre.genre}`
             )}</div>
 		</div>
-        `;
+        `);
         moviesEl.appendChild(movieEl)
     });
 }
@@ -99,10 +87,10 @@ const search = document.querySelector('.header_search');
 form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const apiSearchURL = `${API_url_search}${search.value}`;
+    const apiSearchURL = `${API_URL_SEARCH}${search.value}`;
     if (search.value) {
-        getMovies(apiSearchURL);
-
-        search.value = ''
+        getData(apiSearchURL).then((respData) =>{
+            renderingCards(respData);
+        });
 }
 })
