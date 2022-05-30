@@ -5,7 +5,9 @@ import { getData } from './api.js';
 // Получение текущего id фильма и рендер страницы
 const currFilmId = new URLSearchParams(window.location.search).get('id');
 getData(`${API_URL_FILM}${currFilmId}`).then((respData) => {
-    showMovie(respData);
+    showMoviePoster(respData);
+    showMovieInfo(respData);
+    showSynopsis(respData)
 });
 
 /**
@@ -42,14 +44,15 @@ function checkExpRating(rate, rateAwait) {
 }
 
 /**
+ * Метод отрисовывает постер фильма
  * 
  * @param {object} data - Данные, полученные с API
  */
-function showMovie(data) {
-    const movieInfo = document.querySelector('.container-mp');
+function showMoviePoster(data) {
+    const moviePosterContainer = document.querySelector('.container-mp');
 
     const moviePoster = document.createElement('div');
-    moviePoster.insertAdjacentHTML('afterBegin' ,`
+    moviePoster.insertAdjacentHTML('afterBegin', `
     <div class="poster">
         <div class="poster_img">
             <img class="poster_img_inner" src="${data.posterUrl}"
@@ -57,12 +60,20 @@ function showMovie(data) {
         </div>
     </div>
     `);
-    movieInfo.appendChild(moviePoster);
+    moviePosterContainer.appendChild(moviePoster);
+}
 
+/**
+ * Метод отрисовывает таблицу с подробной информацией о фильме
+ * 
+ * @param {object} data - Данные, полученные с API
+ */
+function showMovieInfo(data) {
+    const movieInfoContainer = document.querySelector('.container-mp');
 
     const infoTable = document.createElement('table');
     infoTable.classList.add('rwd-table');
-    infoTable.insertAdjacentHTML('afterBegin' ,`
+    infoTable.insertAdjacentHTML('afterBegin', `
     <table>
         <tr class="t-row">
             <th class="row-name">Название</th>
@@ -100,9 +111,15 @@ function showMovie(data) {
         </tr>
     </table>
     `);
-    movieInfo.appendChild(infoTable);
+    movieInfoContainer.appendChild(infoTable);
+}
 
-
+/**
+ * Метод отрисовывает попап с синопсисом фильма
+ * 
+ * @param {object} data - Данные, полученные с API
+ */
+function showSynopsis(data) {
     const descPopupArea = document.querySelector('.body_style');
     const descPopup = document.createElement('div');
     descPopup.insertAdjacentHTML('afterBegin', `

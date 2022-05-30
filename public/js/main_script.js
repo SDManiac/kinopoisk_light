@@ -37,7 +37,7 @@ function getColorByRating(rate) {
 function getRating(rate) {
     if (/^[\d\.]+%$/.test(rate)) {
         return 'Soon'
-    } else if (rate == 'null') {
+    } else if (rate == 'null' || !rate) {
         return 'N/R'
     }
     else {
@@ -46,6 +46,9 @@ function getRating(rate) {
 }
 
 /**
+ * В данном методе описан рендер карточек через цикл.
+ * В каждую карточку добавляются данные, полученные через метод API.
+ * Если по запросу не было найдено фильмов, выведет информацию об этом.
  * 
  * @param {object} data - Данные, полученные с API
  */
@@ -55,29 +58,36 @@ function renderingCards(data) {
     // Высвобождение места для фильмов по запросу
     document.querySelector('.container').innerHTML = '';
 
-    data.films.forEach(movie => {
-        const movieEl = document.createElement('div');
-        const location = "/movie_page.html?id=" + movie.filmId;
-
-        movieEl.insertAdjacentHTML('afterBegin' ,`
-        <div class="card">
-			<a href="${location}">
-				<div class="content">
-					<div class="img_container">
-						<img class="img_inner"
-							src="${movie.posterUrlPreview}"
-							alt="${movie.nameRu}">
-					</div>
-					<div class="movie_score movie_score--${getColorByRating(movie.rating)}">${getRating(movie.rating)}</div>
-				</div>
-			</a>
-			<div class="movie_category">${movie.genres.slice(0, 2).map(
-                (genre) => ` ${genre.genre}`
-            )}</div>
-		</div>
-        `);
-        moviesEl.appendChild(movieEl)
-    });
+    if (data.films.length === 0) {
+        const noFilmsText = document.createElement('p');
+        noFilmsText.style.color = '#fff';
+        noFilmsText.textContent = 'По вашему запросу ничего не найдено';
+        moviesEl.appendChild(noFilmsText)
+    } else {
+        data.films.forEach(movie => {
+            const movieEl = document.createElement('div');
+            const location = "/movie_page.html?id=" + movie.filmId;
+    
+            movieEl.insertAdjacentHTML('afterBegin', `
+            <div class="card">
+                <a href="${location}">
+                    <div class="content">
+                        <div class="img_container">
+                            <img class="img_inner"
+                                src="${movie.posterUrlPreview}"
+                                alt="${movie.nameRu}">
+                        </div>
+                        <div class="movie_score movie_score--${getColorByRating(movie.rating)}">${getRating(movie.rating)}</div>
+                    </div>
+                </a>
+                <div class="movie_category">${movie.genres.slice(0, 2).map(
+                    (genre) => ` ${genre.genre}`
+                )}</div>
+            </div>
+            `);
+            moviesEl.appendChild(movieEl)
+        });
+    }
 }
 
 const form = document.querySelector('.submiting_form');
