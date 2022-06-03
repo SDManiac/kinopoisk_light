@@ -9,6 +9,7 @@
 .body_style {
   background-color: #1a191f;
   font-family: "Open Sans", sans-serif;
+  white-space: pre-line;
 }
 
 .header_container {
@@ -330,4 +331,29 @@
   text-align: center;
   cursor: pointer;
   text-decoration: none;
+}
+
+
+.text-chkbox {
+  display: block;
+  position: relative;
+}
+.label-text {
+    cursor: pointer;
+}
+.hidden-text {
+    display: block;
+    overflow: hidden;
+    max-height: 0px;
+    opacity: 0;
+    transition: opacity .3s 0s;
+}
+.checkbox {
+    position: absolute;
+    width: 1px; height: 1px;
+    top: -20px; left: -20px;
+}
+.checkbox:checked + .hidden-text {
+    max-height: none;
+    opacity: 1;
 }
