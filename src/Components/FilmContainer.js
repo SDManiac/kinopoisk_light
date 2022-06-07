@@ -16,7 +16,7 @@ const FilmContainer = () => {
         getData(`${API_URL_FILM}${id}`).then((respData) => {
             setData(respData)
         });
-    },[]);
+    },[id]);
     useEffect( () => {
         if (data && Object.keys(data).length === 0) {
             setError(true)
@@ -24,9 +24,12 @@ const FilmContainer = () => {
     })
     return (
         <div className="container-mp">
-            {!(Object.keys(data).length === 0) && (<MoviePoster data={data} />)}
-            {!(Object.keys(data).length === 0) && (<MovieInfo data={data} />)}
-            {!error && (<p style={{color: '#fff'}}>По вашему запросу ничего не найдено</p>)}
+            {!(Object.keys(data).length === 0) && (
+            <>
+                <MoviePoster data={data} />
+                <MovieInfo data={data} />
+            </>)}
+            {!error && (<p className="text_color">Ошибка загрузки</p>)}
         </div>
     )
 }

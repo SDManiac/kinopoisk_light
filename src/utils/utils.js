@@ -1,4 +1,4 @@
-const API_KEY = 'de697eeb-4ec1-4916-a767-910172fdb60f';
+const API_KEY = '8c8e1a50-6322-4135-8875-5d40a5420d86';
 
 /**
  * 
@@ -15,7 +15,7 @@ const API_KEY = 'de697eeb-4ec1-4916-a767-910172fdb60f';
         console.error('Could not fetch', err)
     });
     if (!resp.ok) {
-        throw new  Error(`Could not fetch ${url}` + `, received ${resp.status}`)
+        throw new  Error(`Could not fetch ${url}, received ${resp.status}`)
     }
     return await resp.json();
 }
@@ -48,9 +48,9 @@ export function getColorByRating(rate) {
  * @returns {string} - Рейтинг/Скоро будет/Отсутствие рейтинга
  */
 export function getRating(rate) {
-    if (/^[\d\.]+%$/.test(rate)) {
+    if (/^[\d.]+%$/.test(rate)) {
         return 'Soon'
-    } else if (rate == 'null' || !rate) {
+    } else if (rate === 'null' || !rate) {
         return 'N/R'
     }
     else {
@@ -89,4 +89,16 @@ export function getRatingMP(rate, rateAwait) {
     } else {
         return rate
     }
+}
+
+/**
+ * 
+ * @param {string} str - Синопсис фильма, полученный через API метод
+ * @returns {string} - Та же строка, но с переносами для экономии места
+ */
+export function splitDesc(str) {
+    return str.slice(56)
+                .split('')
+                    .map((v,i)=>(i%51===50)?`${v}\n`:v)
+                        .join('');
 }

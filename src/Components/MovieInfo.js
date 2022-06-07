@@ -1,5 +1,5 @@
 import React from "react";
-import { getRatingMP, checkExpRating, splitN } from "../utils/utils";
+import { getRatingMP, checkExpRating, splitDesc } from "../utils/utils";
 
 const MovieInfo = ({data}) => {
     return (
@@ -34,7 +34,7 @@ const MovieInfo = ({data}) => {
                 <label className="text-chkbox">
                     <div className="label-text" title="Читать полностью">{data.description.slice(0,56).trimEnd()}</div>
                     <input type="checkbox" className="checkbox"/>
-                    <div className="hidden-text">{data.description.slice(56).split('').map((v,i)=>(i%51==50)?`${v}\n`:v).join('')}</div>
+                    <div className="hidden-text">{splitDesc(data.description)}</div>
                 </label>
             </td>
         </tr>
