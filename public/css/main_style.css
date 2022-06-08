@@ -143,6 +143,10 @@
   background-color: #ff0000;
 }
 
+.movie_score--grey {
+  background-color: #727272;
+}
+
 /* movie page style */
 
 .container-mp {
